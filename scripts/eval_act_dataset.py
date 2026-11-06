@@ -47,7 +47,11 @@ def main():
     parser.add_argument("--out", type=Path, default=None)
     args = parser.parse_args()
 
-    from lerobot.policies import ACTPolicy, ACTConfig
+    import draccus
+    import tempfile
+
+    from lerobot.policies import ACTConfig
+    from lerobot.policies.act.modeling_act import ACTPolicy
     from lerobot.policies.factory import make_pre_post_processors
     from lerobot.datasets import LeRobotDataset
 
@@ -58,7 +62,16 @@ def main():
 
     print(f"loading policy from {model_dir} ...")
     policy = ACTPolicy.from_pretrained(model_dir)
-    policy_cfg = ACTConfig.from_pretrained(model_dir)
+    # 0.6.1 的 ACTConfig.from_pretrained 会被 config.json 頂層 "type" 字段卡住
+    # (draccus DecodingError)；官方 from_pretrained 也是先 pop 再 parse，照搬。
+    with open(model_dir / "config.json") as f:
+        _raw = json.load(f)
+    _raw.pop("type")
+    with tempfile.NamedTemporaryFile("w+", delete=False, suffix=".json") as f:
+        json.dump(_raw, f)
+        _tmp_cfg = f.name
+    with draccus.config_type("json"):
+        policy_cfg = draccus.parse(ACTConfig, _tmp_cfg, args=[])
     policy_cfg.device = "cuda"
     policy.to("cuda").eval()
     preprocessor, _ = make_pre_post_processors(
@@ -88,15 +101,15 @@ def main():
             ep_idx = r["episode_index"]
             lo, hi = r["dataset_from_index"], r["dataset_to_index"]
             policy.reset()
-            pred_joints = np.zeros((0,))
-            gt_joints = np.zeros((0,))
+            pred_joints = np.zeros((0, action_dim))
+            gt_joints = np.zeros((0, action_dim))
             dists = []
             for t in range(lo, hi):
                 sample = ds[t]
                 obs = {k: sample[k] for k in input_keys}
                 batch = preprocessor(obs)
-                pred = policy.select_action(batch).cpu().numpy().reshape(-1)
-                gt = sample["action"].cpu().numpy().reshape(-1)
+                pred = policy.select_action(batch).cpu().numpy().reshape(1, -1)
+                gt = sample["action"].cpu().numpy().reshape(1, -1)
                 pred_joints = np.concatenate([pred_joints, pred])
                 gt_joints = np.concatenate([gt_joints, gt])
                 dists.append(float(np.linalg.norm(pred - gt)))
