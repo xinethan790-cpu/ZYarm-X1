@@ -36,6 +36,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=DEFAULT_ROOT)
     parser.add_argument("--full", action="store_true", help="全量解碼所有幀（耗時）")
+    parser.add_argument("--sample-step", type=int, default=10,
+                        help="抽樣步長（每 N 幀取一幀），默認 10")
     args = parser.parse_args()
 
     manifest = json.loads((args.root / "manifest.json").read_text())
@@ -71,7 +73,7 @@ def main():
         indices = set()
         for row in eps:
             indices.add(row["dataset_to_index"] - 1)  # 逐集最後一幀
-        indices.update(range(0, total, 10))
+        indices.update(range(0, total, args.sample_step))
         indices = sorted(indices)
         mode = "sampled (last-of-episode + every 10)"
 

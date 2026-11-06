@@ -71,6 +71,9 @@ def fix_episode(src_video: Path, out_video: Path, n_declared: int,
         "-c:v", "libx264", "-preset", preset, "-crf", str(crf),
         # 不用 B 幀：解碼序 == 顯示序，ffprobe 包序即幀序，檢查工具不會誤判
         "-bf", "0",
+        # 關鍵幀間隔 30 幀（1s）：LeRobot pyav 每次查詢從最近關鍵幀向前解碼，
+        # 默認 GOP 250 會讓隨機訪問平均多解碼 125 幀（~240ms/次）；GOP 30 降到 ~60ms
+        "-g", "30",
         "-pix_fmt", "yuv420p", "-an",
         str(out_video),
     ]

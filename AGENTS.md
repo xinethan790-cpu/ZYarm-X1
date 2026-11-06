@@ -20,7 +20,7 @@
 | 數據集 | 位置 | 狀態 |
 |---|---|---|
 | **原始採集**（只讀，絕不寫入） | `Pick-place-object/Pick-place-object/zyarm_lerobot_dataset/` | 70 集；視頻時間戳抖動 4~21ms + 尾部欠幀，**LeRobot 無法直接讀取** |
-| **修復版**（訓練用） | `data/zyarm_pick_place_v2/` | 視頻重編碼為嚴格 CFR 30fps + 尾幀克隆補齊至 manifest 聲明幀數；meta/data 拷貝自原始 |
+| **修復版**（訓練用） | `data/zyarm_pick_place_v2/` | 視頻重編碼為嚴格 CFR 30fps + 尾幀克隆補齊至 manifest 聲明幀數 + **GOP 30**（pyav 隨機訪問 ~60ms/次）+ 無 B 幀；meta/data 拷貝自原始 |
 
 原始數據格式：LeRobot v3.0 佈局 + 自定義 `manifest.json`（`zyarm_lerobot_v1` schema，採集工具產物，LeRobot 不讀取）。特徵：`observation.state(7,)`、`action(7,)`（joint0~5 為弧度關節角、joint6 為夾爪 0~1）、`observation.images.overhead(3,480,640)` h264。
 
