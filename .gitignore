@@ -1,0 +1,14 @@
+# 原始采集数据（只读，不入库）
+Pick-place-object/
+
+# 数据与产物
+data/
+outputs/
+logs/
+tmp/
+
+# 通用
+__pycache__/
+*.pyc
+*.log
+.pytest_cache/
