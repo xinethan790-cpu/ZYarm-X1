@@ -27,7 +27,7 @@ $PY -m lerobot.scripts.lerobot_train \
     --steps=100 \
     --log_freq=20 \
     --output_dir="$OUTPUT_DIR" \
-    --run_name=act_smoke \
+    --job_name=act_smoke \
     > "$LOG" 2>&1 &
 TRAIN_PID=$!
 
@@ -46,10 +46,25 @@ if [ $RC -ne 0 ]; then
     exit $RC
 fi
 
-# checkpoint 完整性
-if [ -f "$OUTPUT_DIR/checkpoints/last/model.safetensors" ]; then
-    echo "[PASS] checkpoint complete: $OUTPUT_DIR/checkpoints/last/"
+# checkpoint 完整性（0.6.1 布局：last -> 000100/{pretrained_model,training_state}）
+LAST="$OUTPUT_DIR/checkpoints/last"
+MISSING=0
+for f in \
+    "$LAST/pretrained_model/model.safetensors" \
+    "$LAST/pretrained_model/config.json" \
+    "$LAST/pretrained_model/policy_preprocessor.json" \
+    "$LAST/pretrained_model/policy_postprocessor.json" \
+    "$LAST/pretrained_model/train_config.json" \
+    "$LAST/training_state/training_step.json"
+do
+    if [ ! -f "$f" ]; then
+        echo "[FAIL] missing $f"
+        MISSING=1
+    fi
+done
+if [ $MISSING -eq 0 ]; then
+    echo "[PASS] checkpoint complete: $LAST"
+    exit 0
 else
-    echo "[FAIL] checkpoint missing under $OUTPUT_DIR/checkpoints/last/"
     exit 1
 fi
