@@ -22,6 +22,17 @@
 
 - `--policy.dtype` 只存在於 PI05Config/PI0Config（0.6.1），**ACTConfig 沒有**。ACT 一律 fp32 訓練，不傳該旗標。
 
+## `ImportError: cannot import name 'ACTPolicy' from 'lerobot.policies'`
+
+- 0.6.1 頂層只導出 `ACTConfig`，modeling class 懶加載。要載入權重：
+  `from lerobot.policies.act.modeling_act import ACTPolicy`
+  或走 factory：`from lerobot.policies import get_policy_class, make_policy`。
+
+## `draccus DecodingError: The fields type are not valid for ACTConfig`（`ACTConfig.from_pretrained`）
+
+- checkpoint 的 `config.json` 頂層有註冊表級 `"type": "act"` 字段，draccus 解到具體 class 直接報錯；**官方 `from_pretrained` 第一步也會炸**，只是官方推理走 CLI 配 `--policy.pretrained_path` 從不觸發。
+- **解法**（照官方 `from_pretrained` 第二步行動）：`json.load` → `config.pop("type")` → 寫臨時 json → `draccus.parse(ACTConfig, tmp, args=[])`（包在 `draccus.config_type("json")` 內）。`scripts/eval_act_dataset.py` 已固化此路徑。
+
 ## 其它 0.6.1 API 坑
 
 - `ds.episodes` 為 None → 用 `ds.meta.episodes`。
