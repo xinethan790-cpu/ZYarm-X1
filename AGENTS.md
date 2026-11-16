@@ -14,6 +14,7 @@
 | **GPU** | 2 × NVIDIA L20，各 46 GB |
 | **ffmpeg** | `/usr/bin/ffmpeg`（视频修复用） |
 | **网络** | 可连外网；ACT resnet18 ImageNet 权重首次自动下载 ~45MB |
+| **GitHub** | `xinethan790-cpu/ZYarm-X1`（公开，origin=SSH `git@github.com`）；2026-11-16 首次推送。注意：本机 github.com HTTPS 间歇性断连，**推送一律走 SSH**（稳定）；api.github.com 稳定可用 |
 
 ## 数据集
 
