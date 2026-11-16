@@ -1,0 +1,48 @@
+{
+  "schema": "zyarm_lerobot_source_v1",
+  "episode_index": 5,
+  "episode_name": "episode_000005",
+  "task": "Pick and place object",
+  "fps": 30,
+  "frame_count": 2277,
+  "duration_s": 75.627,
+  "stopped_reason": "manual",
+  "recorded_at": "2026-10-31T05:15:57.689Z",
+  "camera": {
+    "label": "2M (1bcf:2281)",
+    "device_id": "9eacc6cec50e840ad7b0388f719f80254d8e94709d4b7a9e861a31b7fc5cbac5",
+    "width": 640,
+    "height": 480
+  },
+  "cameras": [
+    {
+      "video_key": "observation.images.overhead",
+      "role": "overhead",
+      "device_id": "9eacc6cec50e840ad7b0388f719f80254d8e94709d4b7a9e861a31b7fc5cbac5",
+      "label": "2M (1bcf:2281)",
+      "width": 640,
+      "height": 480,
+      "chunk_index": 0,
+      "file_index": 5,
+      "extension": "mp4",
+      "codec": "h264",
+      "mime_type": "video/mp4;codecs=avc1.42E01E"
+    }
+  ],
+  "data_file": "frames.jsonl",
+  "lerobot_data_file": "data/chunk-000/file-005.parquet",
+  "lerobot_video_file": "videos/observation.images.overhead/chunk-000/file-005.mp4",
+  "lerobot_video_files": {
+    "overhead": "videos/observation.images.overhead/chunk-000/file-005.mp4"
+  },
+  "video_mime_type": "video/mp4;codecs=avc1.42E01E",
+  "video_codec": "h264",
+  "action_units": "joint0-5 degrees, joint6 normalized 0-1",
+  "observation_state_units": "joint0-5 degrees, joint6 normalized 0-1",
+  "observation_state_sources": {
+    "hardware_status": 1520,
+    "page_target_deg": 757
+  },
+  "review_status": "confirmed",
+  "confirmed_at": "2026-10-31T05:15:58.817Z"
+}

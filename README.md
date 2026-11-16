@@ -19,7 +19,7 @@
 
 | 数据集 | 位置 | 说明 |
 |---|---|---|
-| 原始采集（只读，gitignored） | `Pick-place-object/Pick-place-object/zyarm_lerobot_dataset/` | 70 集 / 224,658 帧 / 30fps；视频时间戳抖动 4~21ms + 尾部欠帧，LeRobot 无法直接读取 |
+| 原始采集（只读，已入库） | `Pick-place-object/Pick-place-object/zyarm_lerobot_dataset/` | 70 集 / 224,658 帧 / 30fps，约 2.4GB；视频时间戳抖动 4~21ms + 尾部欠帧，LeRobot 无法直接读取 |
 | 修复版（训练用，gitignored） | `data/zyarm_pick_place_v2/` | 严格 CFR 30fps + 尾帧补齐 + GOP 30（pyav 随机访问 ~60ms/次）+ 无 B 帧 |
 
 数据格式：LeRobot v3.0 布局。特征 `observation.state(7,)`、`action(7,)`（joint0~5 弧度关节角、joint6 夹爪 0~1）、`observation.images.overhead(3,480,640)` h264。
@@ -63,6 +63,6 @@ ZYarm-X1/
 
 ## 备注
 
-- 训练/数据/日志/输出目录均 gitignored，本仓库只含代码、脚本、测试与文档。
+- 原始采集数据已入库（约 2.4GB）；修复版数据、训练/评估输出、运行日志仍 gitignored——修复版可用 `scripts/fix_dataset.py` 从原始数据重建。
 - 启动训练前必须 `nvidia-smi` 确认 GPU 空闲；本机存在 root 级 vLLM 推理服务，显存冲突时先报告负责人，不得擅自 kill。
 - 详细执行规则见 `AGENTS.md`，踩坑记录见 `.agents/skills/zyarm-act/reference/troubleshooting.md`。

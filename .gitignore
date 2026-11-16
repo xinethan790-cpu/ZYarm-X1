@@ -1,11 +1,8 @@
-# 原始采集数据（只读，不入库）
-Pick-place-object/
-
-# 数据与产物
-data/
-outputs/
-logs/
-tmp/
+# 数据与产物（锚定根目录，勿忽略原始数据集内部的 data/ 子目录）
+/data/
+/outputs/
+/logs/
+/tmp/
 
 # 通用
 __pycache__/

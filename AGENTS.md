@@ -14,13 +14,13 @@
 | **GPU** | 2 × NVIDIA L20，各 46 GB |
 | **ffmpeg** | `/usr/bin/ffmpeg`（视频修复用） |
 | **网络** | 可连外网；ACT resnet18 ImageNet 权重首次自动下载 ~45MB |
-| **GitHub** | `xinethan790-cpu/ZYarm-X1`（公开，origin=SSH `git@github.com`）；2026-11-16 首次推送。注意：本机 github.com HTTPS 间歇性断连，**推送一律走 SSH**（稳定）；api.github.com 稳定可用 |
+| **GitHub** | `xinethan790-cpu/ZYarm-X1`（公开，origin=SSH `git@github.com`）；2026-11-16 首次推送，**含原始采集数据（~2.4GB）**，仓库总大小 ≈2.5GB（5GB 软限的一半），勿再往仓库加大文件。注意：本机 github.com HTTPS 间歇性断连，**推送一律走 SSH**（稳定）；api.github.com 稳定可用 |
 
 ## 数据集
 
 | 数据集 | 位置 | 状态 |
 |---|---|---|
-| **原始采集**（只读，绝不写入） | `Pick-place-object/Pick-place-object/zyarm_lerobot_dataset/` | 70 集；视频时间戳抖动 4~21ms + 尾部欠帧，**LeRobot 无法直接读取** |
+| **原始采集**（只读，绝不写入，已入库） | `Pick-place-object/Pick-place-object/zyarm_lerobot_dataset/` | 70 集 / ~2.4GB；视频时间戳抖动 4~21ms + 尾部欠帧，**LeRobot 无法直接读取** |
 | **修复版**（训练用） | `data/zyarm_pick_place_v2/` | 视频重编码为严格 CFR 30fps + 尾帧克隆补齐至 manifest 声明帧数 + **GOP 30**（pyav 随机访问 ~60ms/次）+ 无 B 帧；meta/data 拷贝自原始；2026-11-06 全量深扫通过（224,658 帧逐帧解码 OK） |
 
 原始数据格式：LeRobot v3.0 布局 + 自定义 `manifest.json`（`zyarm_lerobot_v1` schema，采集工具产物，LeRobot 不读取）。特征：`observation.state(7,)`、`action(7,)`（joint0~5 为弧度关节角、joint6 为夹爪 0~1）、`observation.images.overhead(3,480,640)` h264。
@@ -30,7 +30,7 @@
 ```
 ZYarm-X1/
 ├── .agents/skills/zyarm-act/     # 项目 skill：SKILL.md + reference/（架构、troubleshooting）
-├── Pick-place-object/            # 原始采集数据（只读，gitignored）
+├── Pick-place-object/            # 原始采集数据（只读，已入库）
 ├── data/zyarm_pick_place_v2/     # 修复后数据集（gitignored）
 ├── scripts/                      # 诊断/修复/训练/评估脚本
 ├── tests/                        # 每步验收测试（TDD）
